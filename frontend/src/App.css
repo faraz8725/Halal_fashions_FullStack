@@ -383,3 +383,51 @@ nav {
     padding: 20px;
   }
 }
+
+.product-detail {
+  display: flex;
+  gap: 40px;
+  width: 90%;
+  margin: 50px auto;
+  flex-wrap: wrap;
+}
+
+.left {
+  flex: 1;
+}
+
+.main-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+}
+
+.thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbs img {
+  width: 70px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.right {
+  flex: 1;
+}
+
+.price {
+  color: #ff9800;
+  font-size: 22px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background: #ff9800;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
