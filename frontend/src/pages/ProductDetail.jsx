@@ -44,16 +44,7 @@ export default ProductDetail;  */
 
 import { useParams } from "react-router-dom";
 
-const products = [
-  {
-    id: 1,
-    images: ["/Presentation.png", "/Presentation.png"],
-    name: "Floral Suit",
-    price: "₹999",
-    description: "Beautiful floral suit",
-    stock: 10,
-  },
-];
+
 
 function ProductDetail() {
   const { id } = useParams();
