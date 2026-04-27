@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema({
   sizes: [String],
   category: String, // "ladies" | "kids"
   image: String,
+   fileId: String,
 });
 
 export default mongoose.model("Product", productSchema);
