@@ -88,7 +88,7 @@ router.delete("/:id", async (req, res) => {
 
 export default router;  */
 
-
+/*
 import express from "express";
 import Product from "../models/Product.js";
 import multer from "multer";
@@ -107,12 +107,12 @@ const router = express.Router();
 
 
 
-import multer from "multer";
+//import multer from "multer";
 
 const storage = multer.memoryStorage(); // 🔥 change
 const upload = multer({ storage });
 
-/* ================== CREATE ================== */
+/* ================== CREATE ================== *
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     const { name, price, stock, sizes, category } = req.body;
@@ -129,6 +129,133 @@ router.post("/add", upload.single("image"), async (req, res) => {
 
     res.json(product);
   } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+/* ================== GET ALL ================== *
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+/* ================== GET ONE ================== *
+router.get("/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    res.json(product);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+/* ================== UPDATE ================== *
+router.put("/:id", upload.single("image"), async (req, res) => {
+  try {
+    const { name, price, stock, sizes, category } = req.body;
+
+    const existing = await Product.findById(req.params.id);
+
+    const updateData = {
+      name,
+      price,
+      stock,
+      sizes: sizes ? sizes.split(",") : [],
+      category,
+    };
+
+    // 🔥 agar new image aayi to old delete karo
+    if (req.file) {
+      if (existing?.fileId) {
+        await imagekit.deleteFile(existing.fileId);
+      }
+
+      updateData.image = req.file.path;
+      updateData.fileId = req.file.fileId;
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json(product);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+/* ================== DELETE ================== *
+router.delete("/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    // 🔥 ImageKit se bhi delete
+    if (product?.fileId) {
+      await imagekit.deleteFile(product.fileId);
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Deleted Successfully" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+export default router; */
+
+
+
+import express from "express";
+import Product from "../models/Product.js";
+import multer from "multer";
+import imagekit from "../utils/imagekit.js";
+
+const router = express.Router();
+
+// ✅ memory storage (buffer ke liye)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+/* ================== CREATE ================== */
+router.post("/add", upload.single("image"), async (req, res) => {
+  try {
+    const { name, price, stock, sizes, category } = req.body;
+
+    let imageUrl = "";
+    let fileId = "";
+
+    // 🔥 upload to ImageKit
+    if (req.file) {
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+        folder: "products",
+      });
+
+      imageUrl = result.url;
+      fileId = result.fileId;
+    }
+
+    const product = await Product.create({
+      name,
+      price,
+      stock,
+      sizes: sizes ? sizes.split(",") : [],
+      category,
+      image: imageUrl,
+      fileId: fileId,
+    });
+
+    res.json(product);
+  } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
@@ -168,14 +295,20 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       category,
     };
 
-    // 🔥 agar new image aayi to old delete karo
+    // 🔥 agar new image aayi to old delete + new upload
     if (req.file) {
       if (existing?.fileId) {
         await imagekit.deleteFile(existing.fileId);
       }
 
-      updateData.image = req.file.path;
-      updateData.fileId = req.file.fileId;
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+        folder: "products",
+      });
+
+      updateData.image = result.url;
+      updateData.fileId = result.fileId;
     }
 
     const product = await Product.findByIdAndUpdate(
@@ -186,6 +319,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 
     res.json(product);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
@@ -195,7 +329,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    // 🔥 ImageKit se bhi delete
+    // 🔥 ImageKit se delete
     if (product?.fileId) {
       await imagekit.deleteFile(product.fileId);
     }
