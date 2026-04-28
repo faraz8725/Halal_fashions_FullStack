@@ -4,6 +4,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 
+import reviewRoutes from "./routes/review.js";
+
+
+
 import productRoutes from "./routes/product.js";
 
 dotenv.config();
@@ -18,7 +22,7 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/product", productRoutes);
 app.use("/uploads", express.static("uploads"));
-
+app.use("/api/review", reviewRoutes);
 
 
 

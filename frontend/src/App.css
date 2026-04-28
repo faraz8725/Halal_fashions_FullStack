@@ -179,25 +179,77 @@ nav {
 }
 
 /* REVIEWS */
+/* SECTION */
 .reviews-section {
-  width: 90%;
-  margin: 50px auto;
+  padding: 40px 20px;
   text-align: center;
 }
 
-.reviews-container {
+/* WRAPPER (2 column layout) */
+.reviews-wrapper {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
 }
 
+/* LEFT → REVIEWS */
+.reviews-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* REVIEW CARD */
 .review-card {
   background: #fff;
   padding: 20px;
-  width: 260px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* RIGHT → FORM */
+.review-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* INPUTS */
+.review-form input,
+.review-form textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+/* BUTTON */
+.review-form button {
+  padding: 12px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 🔥 RESPONSIVE */
+@media (max-width: 768px) {
+  .reviews-wrapper {
+    flex-direction: column;
+  }
+
+  /* order change */
+  .reviews-container {
+    order: 1;
+  }
+
+  .review-form {
+    order: 2;
+  }
 }
 
 /* CONTACT */
